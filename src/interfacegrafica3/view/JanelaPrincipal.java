@@ -20,11 +20,12 @@ public class JanelaPrincipal extends javax.swing.JFrame {
 
     JanelaCadastro janelaCadastro;
     JanelaCadastroUF janelaCadastroUF;
+    JanelaFornecedor janelaFornecedor;
     public List<Pessoa> lstPessoa;
     public int ultimoId;
     private Conexao conexao;
     public ConexaoMySQL conexaoMySQL;
-    
+
     /**
      * Creates new form JanelaPrincipal
      */
@@ -56,7 +57,7 @@ public class JanelaPrincipal extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
-        OpenForncedor = new javax.swing.JMenu();
+        OpenArquivo = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
         openMenuItem1 = new javax.swing.JMenuItem();
         openMenuFornecedor = new javax.swing.JMenuItem();
@@ -67,11 +68,11 @@ public class JanelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        OpenForncedor.setMnemonic('a');
-        OpenForncedor.setText("Arquivo");
-        OpenForncedor.addActionListener(new java.awt.event.ActionListener() {
+        OpenArquivo.setMnemonic('a');
+        OpenArquivo.setText("Arquivo");
+        OpenArquivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OpenForncedorActionPerformed(evt);
+                OpenArquivoActionPerformed(evt);
             }
         });
 
@@ -82,7 +83,7 @@ public class JanelaPrincipal extends javax.swing.JFrame {
                 openMenuItemActionPerformed(evt);
             }
         });
-        OpenForncedor.add(openMenuItem);
+        OpenArquivo.add(openMenuItem);
 
         openMenuItem1.setMnemonic('u');
         openMenuItem1.setText("Cadastro de UF");
@@ -91,10 +92,15 @@ public class JanelaPrincipal extends javax.swing.JFrame {
                 openMenuItem1ActionPerformed(evt);
             }
         });
-        OpenForncedor.add(openMenuItem1);
+        OpenArquivo.add(openMenuItem1);
 
         openMenuFornecedor.setText("Fornecedor");
-        OpenForncedor.add(openMenuFornecedor);
+        openMenuFornecedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuFornecedorActionPerformed(evt);
+            }
+        });
+        OpenArquivo.add(openMenuFornecedor);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Sair");
@@ -103,9 +109,9 @@ public class JanelaPrincipal extends javax.swing.JFrame {
                 exitMenuItemActionPerformed(evt);
             }
         });
-        OpenForncedor.add(exitMenuItem);
+        OpenArquivo.add(exitMenuItem);
 
-        menuBar.add(OpenForncedor);
+        menuBar.add(OpenArquivo);
 
         helpMenu.setMnemonic('j');
         helpMenu.setText("Ajuda");
@@ -147,16 +153,16 @@ public class JanelaPrincipal extends javax.swing.JFrame {
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
         //menu cadastro pessoa
-        try{
+        try {
             janelaCadastro = JanelaCadastro.getInstancia(this);
-            if(!desktopPane.isAncestorOf(janelaCadastro)){
+            if (!desktopPane.isAncestorOf(janelaCadastro)) {
                 desktopPane.add("JanelaCadastro", janelaCadastro);
                 janelaCadastro.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
             }
-            
+
             janelaCadastro.setSelected(true);
-        }catch(Exception ex){
-            JOptionPane.showConfirmDialog(null, 
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null,
                     "Erro ao abrir a tela de cadastro de clientes: ",
                     "Cadastro de clientes",
                     JOptionPane.ERROR_MESSAGE);
@@ -172,50 +178,72 @@ public class JanelaPrincipal extends javax.swing.JFrame {
                 JOptionPane.INFORMATION_MESSAGE
         );
         //imprimir todos os registros da minha lista:
-        for(int i = 0; i < lstPessoa.size(); i++){
+        for (int i = 0; i < lstPessoa.size(); i++) {
             Pessoa p = lstPessoa.get(i);
             JOptionPane.showMessageDialog(
-                this,
-                p.toString(),
-                "Cadastro de pessoa",
-                JOptionPane.INFORMATION_MESSAGE
+                    this,
+                    p.toString(),
+                    "Cadastro de pessoa",
+                    JOptionPane.INFORMATION_MESSAGE
             );
         }
     }//GEN-LAST:event_contentMenuItemActionPerformed
 
     private void openMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItem1ActionPerformed
         //menu cadastro uf
-        try{
+        try {
             janelaCadastroUF = JanelaCadastroUF.getInstancia(this);
-            if(!desktopPane.isAncestorOf(janelaCadastroUF)){
+            if (!desktopPane.isAncestorOf(janelaCadastroUF)) {
                 desktopPane.add("JanelaCadastroUF", janelaCadastroUF);
                 janelaCadastroUF.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
             }
-            
+
             janelaCadastroUF.setSelected(true);
-        }catch(Exception ex){
-            JOptionPane.showConfirmDialog(null, 
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null,
                     "Erro ao abrir a tela de cadastro de UF: ",
                     "Cadastro de UF",
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_openMenuItem1ActionPerformed
 
-    private void OpenForncedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenForncedorActionPerformed
+    private void OpenArquivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenArquivoActionPerformed
         try {
-        JanelaCadastro janelaCadastro = JanelaCadastro.getInstancia(this);
-        if (!desktopPane.isAncestorOf(janelaCadastro)) {
-            desktopPane.add("JanelaCadastro", janelaCadastro);
-            janelaCadastro.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            JanelaCadastro janelaCadastro = JanelaCadastro.getInstancia(this);
+            if (!desktopPane.isAncestorOf(janelaCadastro)) {
+                desktopPane.add("JanelaCadastro", janelaCadastro);
+                janelaCadastro.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            }
+            janelaCadastro.setSelected(true);
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null,
+                    "Erro ao abrir a tela de cadastro de fornecedor: ",
+                    "Cadastro de Fornecedor",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        janelaCadastro.setSelected(true);
-    } catch (Exception ex) {
-        JOptionPane.showConfirmDialog(null,
-                "Erro ao abrir a tela de cadastro de fornecedor: ",
-                "Cadastro de Fornecedor",
-                JOptionPane.ERROR_MESSAGE);
-    }
-    }//GEN-LAST:event_OpenForncedorActionPerformed
+    }//GEN-LAST:event_OpenArquivoActionPerformed
+
+    private void openMenuFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuFornecedorActionPerformed
+        try {
+            // Passando a instância de JanelaPrincipal para o construtor de JanelaFornecedor
+            janelaFornecedor = new JanelaFornecedor(this); // 'this' é a instância de JanelaPrincipal
+
+            // Verifica se a JanelaFornecedor não foi adicionada ao JDesktopPane
+            if (!desktopPane.isAncestorOf(janelaFornecedor)) {
+                desktopPane.add(janelaFornecedor);
+                janelaFornecedor.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+            }
+
+            // Torna a JanelaFornecedor visível e a janela selecionada
+            janelaFornecedor.setVisible(true);
+            janelaFornecedor.setSelected(true);
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null,
+                    "Erro ao abrir a tela de cadastro de Fornecedor.",
+                    "Cadastro de Fornecedor",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_openMenuFornecedorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -253,7 +281,7 @@ public class JanelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu OpenForncedor;
+    private javax.swing.JMenu OpenArquivo;
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem contentMenuItem;
     private javax.swing.JDesktopPane desktopPane;

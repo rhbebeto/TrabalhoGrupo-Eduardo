@@ -107,8 +107,8 @@ public class FornecedorRepository implements Crud<Fornecedor> {
                     rs.getString("endereco"),
                     rs.getString("telefone"),
                     rs.getString("categoria"),
-                    rs.getInt("id"),
-                    uf
+                    uf,
+                    rs.getInt("id")
                 );
             }
             rs.close();

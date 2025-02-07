@@ -7,7 +7,7 @@ public class Fornecedor extends PessoaJuridica {
     // Construtor atualizado
     public Fornecedor(String cnpj, String inscricaoEstadual, String nomeFantasia, 
                       String nome, String email, String endereco, 
-                      String telefone, String categoria, int id, Uf uf) {
+                      String telefone, String categoria, Uf uf,int id) {
         super(cnpj, inscricaoEstadual, nomeFantasia, nome, email, endereco, telefone, id);
         this.categoria = categoria;
         this.uf = uf;

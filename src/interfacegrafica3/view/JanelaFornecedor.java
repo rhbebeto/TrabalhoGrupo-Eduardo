@@ -4,6 +4,9 @@ import interfacegrafica3.model.Fornecedor;
 import interfacegrafica3.repository.FornecedorRepository;
 import javax.swing.JOptionPane;
 import interfacegrafica3.model.Uf;
+import interfacegrafica3.repository.UfRepository;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JanelaFornecedor extends javax.swing.JInternalFrame {
 
@@ -15,12 +18,28 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
         this.janelaPrincipal = janelaPrincipal;
         txtId1.setVisible(false); //escondendo txtId
         txtId1.setText("0");
+        carregarUfs();
 
     }
 
     private void fecharJanela() {
         instancia = null;
         dispose();
+    }
+
+    private void carregarUfs() {
+        UfRepository ufRepository = new UfRepository();
+        List<Uf> lista = ufRepository.listar(janelaPrincipal.conexaoMySQL.connection);
+
+        cbUf.removeAllItems(); // Limpa os itens anteriores
+
+        if (lista != null && !lista.isEmpty()) {
+            for (Uf uf : lista) {
+                cbUf.addItem(uf); // Adiciona os estados ao JComboBox
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Nenhum estado encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void limparCampos() {
@@ -61,6 +80,8 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
         txtEmail1 = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         txtTelefone1 = new javax.swing.JTextField();
+        cbUf = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -115,6 +136,14 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
 
         jLabel10.setText("Categoria:");
 
+        cbUf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbUfActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Uf:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,12 +151,6 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnGravar1)
-                        .addGap(42, 42, 42)
-                        .addComponent(btnExcluir1)
-                        .addGap(60, 60, 60)
-                        .addComponent(btnFechar1))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -152,10 +175,6 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
                                         .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel10)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtTelefone1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel8)
@@ -163,7 +182,15 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(txtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtEndereco1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(txtEndereco1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel10)
+                                        .addComponent(jLabel5))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtTelefone1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                                        .addComponent(cbUf, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnRetroceder)
@@ -172,7 +199,14 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
                                 .addComponent(btnAvancar2))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(txtId1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(16, 16, 16)))))
+                                .addGap(16, 16, 16))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(btnGravar1)
+                        .addGap(42, 42, 42)
+                        .addComponent(btnExcluir1)
+                        .addGap(60, 60, 60)
+                        .addComponent(btnFechar1)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -213,12 +247,16 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTelefone1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbUf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGravar1)
                     .addComponent(btnExcluir1)
                     .addComponent(btnFechar1))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(23, 23, 23))
         );
 
         pack();
@@ -233,54 +271,54 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnExcluir1ActionPerformed
 
     private void btnGravar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGravar1ActionPerformed
-      
-try {
-        // Obtém o ID do formulário (se for "0" significa novo cadastro)
-        int id = Integer.parseInt(txtId1.getText());
         
-        // Cria o objeto Fornecedor com os dados dos campos
-        Fornecedor fornecedor = new Fornecedor(
-            txtCnpj.getText(),          // cnpj
-            txtEndereco1.getText(),     // inscrição estadual
-            txtEmail1.getText(),        // nome fantasia
-            txtNome.getText(),          // nome
-            txtEmail.getText(),         // email
-            txtEndereco.getText(),      // endereço
-            txtTelefone.getText(),      // telefone
-            txtTelefone1.getText(),     // categoria
-            new Uf("UF Nome", "UF", 0),   // objeto Uf dummy (substitua por dados reais)
-            id                          // id
-        );
-        
-        // Instancia o repositório e realiza a operação de inserção ou atualização
-        FornecedorRepository repo = new FornecedorRepository();
-        boolean sucesso;
-        if(id == 0){
-            // Se ID for 0, é um novo cadastro
-            sucesso = repo.inserir(janelaPrincipal.conexaoMySQL.connection, fornecedor);
-        } else {
-            // Caso contrário, atualiza o registro existente
-            sucesso = repo.atualizar(janelaPrincipal.conexaoMySQL.connection, fornecedor);
-        }
-        
-        // Exibe mensagem de sucesso e limpa os campos se a operação for bem-sucedida
-        if(sucesso){
-            JOptionPane.showMessageDialog(
-                this,
-                "Cadastro realizado com sucesso!",
-                "Cadastro de Fornecedor",
-                JOptionPane.INFORMATION_MESSAGE
+        try {
+            // Obtém o ID do formulário (se for "0" significa novo cadastro)
+            int id = Integer.parseInt(txtId1.getText());
+            Uf ufSelecionado = (Uf) cbUf.getSelectedItem();
+            // Cria o objeto Fornecedor com os dados dos campos
+            Fornecedor fornecedor = new Fornecedor(
+                    txtCnpj.getText(), // cnpj
+                    txtEndereco1.getText(), // inscrição estadual
+                    txtEmail1.getText(), // nome fantasia
+                    txtNome.getText(), // nome
+                    txtEmail.getText(), // email
+                    txtEndereco.getText(), // endereço
+                    txtTelefone.getText(), // telefone
+                    txtTelefone1.getText(), // categoria
+                    ufSelecionado, // objeto Uf dummy (substitua por dados reais)
+                    id // id
             );
-            limparCampos();
+
+            // Instancia o repositório e realiza a operação de inserção ou atualização
+            FornecedorRepository repo = new FornecedorRepository();
+            boolean sucesso;
+            if (id == 0) {
+                // Se ID for 0, é um novo cadastro
+                sucesso = repo.inserir(janelaPrincipal.conexaoMySQL.connection, fornecedor);
+            } else {
+                // Caso contrário, atualiza o registro existente
+                sucesso = repo.atualizar(janelaPrincipal.conexaoMySQL.connection, fornecedor);
+            }
+
+            // Exibe mensagem de sucesso e limpa os campos se a operação for bem-sucedida
+            if (sucesso) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Cadastro realizado com sucesso!",
+                        "Cadastro de Fornecedor",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+                limparCampos();
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Erro ao gravar os dados: " + ex.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
-    } catch(Exception ex) {
-        JOptionPane.showMessageDialog(
-            this,
-            "Erro ao gravar os dados: " + ex.getMessage(),
-            "Erro",
-            JOptionPane.ERROR_MESSAGE
-        );
-    }
     }//GEN-LAST:event_btnGravar1ActionPerformed
 
     private void btnAvancar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancar2ActionPerformed
@@ -290,6 +328,10 @@ try {
     private void btnRetrocederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetrocederActionPerformed
 
     }//GEN-LAST:event_btnRetrocederActionPerformed
+
+    private void cbUfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbUfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbUfActionPerformed
 
     public static void main(String args[]) {
 
@@ -307,11 +349,13 @@ try {
     private javax.swing.JButton btnFechar1;
     private javax.swing.JButton btnGravar1;
     private javax.swing.JButton btnRetroceder;
+    private javax.swing.JComboBox<Uf> cbUf;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;

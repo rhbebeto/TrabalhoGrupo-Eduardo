@@ -20,6 +20,11 @@ public class Uf {
         this.sigla = sigla;
         this.id = id;
     }
+    
+    @Override
+    public String toString() {
+        return nome + " (" + sigla + ")";
+    }
 
     public int getId() {
         return id;

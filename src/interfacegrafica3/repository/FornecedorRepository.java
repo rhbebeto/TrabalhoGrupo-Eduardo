@@ -5,6 +5,8 @@ import interfacegrafica3.model.Uf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FornecedorRepository implements Crud<Fornecedor> {
 
@@ -119,4 +121,51 @@ public class FornecedorRepository implements Crud<Fornecedor> {
             return null;
         }
     }
+
+    // ADICIONADO O MÉTODO LISTAR AQUI:
+    public List<Fornecedor> listar(Connection connection) {
+        List<Fornecedor> fornecedores = new ArrayList<>();
+        try {
+            // Monta a query para selecionar todos os fornecedores
+            String sql = "SELECT f.id, f.nome, f.email, f.endereco, f.uf, f.telefone, " +
+                         "f.cnpj, f.inscricaoEstadual, f.nomeFantasia, f.categoria, " +
+                         "u.nome AS uf_nome, u.sigla AS uf_sigla " +
+                         "FROM fornecedor f " +
+                         "JOIN uf u ON f.uf = u.id";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                // Cria o objeto Uf com os dados retornados
+                Uf uf = new Uf();
+                uf.setId(rs.getInt("uf"));
+                uf.setNome(rs.getString("uf_nome"));
+                uf.setSigla(rs.getString("uf_sigla"));
+                
+                // Cria o objeto Fornecedor com os dados da query
+                Fornecedor fornecedor = new Fornecedor(
+                    rs.getString("cnpj"),
+                    rs.getString("inscricaoEstadual"),
+                    rs.getString("nomeFantasia"),
+                    rs.getString("nome"),
+                    rs.getString("email"),
+                    rs.getString("endereco"),
+                    rs.getString("telefone"),
+                    rs.getString("categoria"),
+                    uf,
+                    rs.getInt("id")
+                );
+                
+                fornecedores.add(fornecedor); // Adiciona o fornecedor à lista
+            }
+            
+            rs.close();
+            stmt.close();
+        } catch (Exception ex) {
+            System.out.println("Erro ao listar fornecedores: " + ex.getMessage());
+        }
+        return fornecedores; // Retorna a lista de fornecedores
+    }
 }
+
+        

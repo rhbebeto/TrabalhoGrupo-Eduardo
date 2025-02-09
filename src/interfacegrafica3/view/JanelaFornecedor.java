@@ -12,6 +12,8 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
 
     private static JanelaFornecedor instancia;
     private JanelaPrincipal janelaPrincipal;
+    private List<Fornecedor> fornecedores = new ArrayList<>();
+    private int indexAtual = -1;
 
     public JanelaFornecedor(JanelaPrincipal janelaPrincipal) {
         initComponents();
@@ -19,6 +21,7 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
         txtId1.setVisible(false); //escondendo txtId
         txtId1.setText("0");
         carregarUfs();
+        carregarFornecedores();
 
     }
 
@@ -41,6 +44,36 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Nenhum estado encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void carregarFornecedores() {
+    FornecedorRepository fornecedorRepository = new FornecedorRepository();
+    fornecedores = fornecedorRepository.listar(janelaPrincipal.conexaoMySQL.connection); // Assumindo que há esse método no repositório.
+
+    if (fornecedores.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Nenhum fornecedor encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+    } else {
+        indexAtual = 0; // Inicializa o índice para o primeiro fornecedor
+        exibirFornecedor(indexAtual);
+    }
+}
+    
+    private void exibirFornecedor(int index) {
+    if (index >= 0 && index < fornecedores.size()) {
+        Fornecedor fornecedor = fornecedores.get(index);
+
+        // Exibindo as informações nos campos
+        txtId1.setText(String.valueOf(fornecedor.getId()));
+        txtNome.setText(fornecedor.getNome());
+        txtEndereco.setText(fornecedor.getEndereco());
+        txtEmail.setText(fornecedor.getEmail());
+        txtTelefone.setText(fornecedor.getTelefone());
+        txtCnpj.setText(fornecedor.getCnpj());
+        txtEndereco1.setText(fornecedor.getInscricaoEstadual());
+        txtEmail1.setText(fornecedor.getNomeFantasia());
+        txtTelefone1.setText(fornecedor.getCategoria());
+        cbUf.setSelectedItem(fornecedor.getUf()); // Supondo que cbUf contém o objeto Uf
+    }
+}
 
     private void limparCampos() {
         txtId1.setText("0");
@@ -322,10 +355,21 @@ public class JanelaFornecedor extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnGravar1ActionPerformed
 
     private void btnAvancar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancar2ActionPerformed
-        // TODO add your handling code here:
+        if (indexAtual < fornecedores.size() - 1) {
+        indexAtual++;
+        exibirFornecedor(indexAtual);
+    } else {
+        JOptionPane.showMessageDialog(this, "Você já está no último fornecedor.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+    }
     }//GEN-LAST:event_btnAvancar2ActionPerformed
 
     private void btnRetrocederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetrocederActionPerformed
+        if (indexAtual > 0) {
+        indexAtual--;
+        exibirFornecedor(indexAtual);
+    } else {
+        JOptionPane.showMessageDialog(this, "Você já está no primeiro fornecedor.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     }//GEN-LAST:event_btnRetrocederActionPerformed
 
